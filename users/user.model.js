@@ -2,77 +2,42 @@ const {
   DataTypes
 } = require('sequelize');
 
-module.exports = sequelize => {
+module.exports = model;
+
+function model(sequelize) {
   const attributes = {
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: null,
-      primaryKey: true,
-      autoIncrement: true,
-      comment: null,
-      field: "id"
-    },
     firstName: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-      defaultValue: null,
-      primaryKey: false,
-      autoIncrement: false,
-      comment: null,
-      field: "firstName"
+      type: DataTypes.STRING,
+      allowNull: false
     },
     lastName: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-      defaultValue: null,
-      primaryKey: false,
-      autoIncrement: false,
-      comment: null,
-      field: "lastName"
+      type: DataTypes.STRING,
+      allowNull: false
     },
     username: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-      defaultValue: null,
-      primaryKey: false,
-      autoIncrement: false,
-      comment: null,
-      field: "username"
+      type: DataTypes.STRING,
+      allowNull: false
     },
     hash: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-      defaultValue: null,
-      primaryKey: false,
-      autoIncrement: false,
-      comment: null,
-      field: "hash"
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: null,
-      primaryKey: false,
-      autoIncrement: false,
-      comment: null,
-      field: "createdAt"
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: null,
-      primaryKey: false,
-      autoIncrement: false,
-      comment: null,
-      field: "updatedAt"
+      type: DataTypes.STRING,
+      allowNull: false
     }
   };
+
   const options = {
-    tableName: "users",
-    comment: "",
-    indexes: []
+    defaultScope: {
+      // exclude hash by default
+      attributes: {
+        exclude: ['hash']
+      }
+    },
+    scopes: {
+      // include hash with this scope
+      withHash: {
+        attributes: {},
+      }
+    }
   };
-  const UsersModel = sequelize.define("users_model", attributes, options);
-  return UsersModel;
-};
+
+  return sequelize.define('User', attributes, options);
+}

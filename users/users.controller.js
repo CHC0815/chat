@@ -42,7 +42,9 @@ function registerSchema(req, res, next) {
 
 function register(req, res, next) {
     userService.create(req.body)
-        .then(() => res.json({ message: 'Registration successful' }))
+        .then(() => res.json({
+            message: 'Registration successful'
+        }))
         .catch(next);
 }
 
@@ -80,6 +82,8 @@ function update(req, res, next) {
 
 function _delete(req, res, next) {
     userService.delete(req.params.id)
-        .then(() => res.json({ message: 'User deleted successfully' }))
+        .then(() => res.json({
+            message: 'User deleted successfully'
+        }))
         .catch(next);
 }

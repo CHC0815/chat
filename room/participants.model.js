@@ -64,6 +64,6 @@ module.exports = sequelize => {
       fields: ["room_id"]
     }]
   };
-  const ParicipantsModel = sequelize.define("paricipants_model", attributes, options);
-  return ParicipantsModel;
+  const ParticipantsModel = sequelize.define("participants_model", attributes, options);
+  return ParticipantsModel;
 };
