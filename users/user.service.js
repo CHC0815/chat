@@ -12,15 +12,29 @@ module.exports = {
     delete: _delete
 };
 
-async function authenticate({ username, password }) {
-    const user = await db.User.scope('withHash').findOne({ where: { username } });
+async function authenticate({
+    username,
+    password
+}) {
+    const user = await db.User.scope('withHash').findOne({
+        where: {
+            username
+        }
+    });
 
     if (!user || !(await bcrypt.compare(password, user.hash)))
         throw 'Username or password is incorrect';
 
     // authentication successful
-    const token = jwt.sign({ sub: user.id }, config.secret, { expiresIn: '7d' });
-    return { ...omitHash(user.get()), token };
+    const token = jwt.sign({
+        sub: user.id
+    }, config.secret, {
+        expiresIn: '7d'
+    });
+    return {
+        ...omitHash(user.get()),
+        token
+    };
 }
 
 async function getAll() {
@@ -33,7 +47,11 @@ async function getById(id) {
 
 async function create(params) {
     // validate
-    if (await db.User.findOne({ where: { username: params.username } })) {
+    if (await db.User.findOne({
+            where: {
+                username: params.username
+            }
+        })) {
         throw 'Username "' + params.username + '" is already taken';
     }
 
@@ -51,7 +69,11 @@ async function update(id, params) {
 
     // validate
     const usernameChanged = params.username && user.username !== params.username;
-    if (usernameChanged && await db.User.findOne({ where: { username: params.username } })) {
+    if (usernameChanged && await db.User.findOne({
+            where: {
+                username: params.username
+            }
+        })) {
         throw 'Username "' + params.username + '" is already taken';
     }
 
@@ -81,6 +103,9 @@ async function getUser(id) {
 }
 
 function omitHash(user) {
-    const { hash, ...userWithoutHash } = user;
+    const {
+        hash,
+        ...userWithoutHash
+    } = user;
     return userWithoutHash;
 }
