@@ -1,0 +1,10 @@
+﻿{
+    "database": {
+        "host": "localhost",
+        "port": 3306,
+        "user": "root",
+        "password": "CHC0815",
+        "database": "authentification"
+    },
+    "secret": "ANYSTRING"
+}
