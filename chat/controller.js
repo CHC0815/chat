@@ -58,6 +58,7 @@ function getAllMessagesInRoom(req, res, next) {
 
 function sendMessage(req, res, next) {
     messageService.sendMessage(req.body.sender_id, req.body.room_id, req.body.message);
+    res.send("Message sent");
 }
 
 function login(req, res, next) {

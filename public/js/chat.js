@@ -1,40 +1,82 @@
 var app = {
     messages: [],
+    currentRoomId: null,
+    lastDate: null,
+    roomPassword: null,
+    userId: null,
 
+    loadRoom() {
+        this.messages = [];
+        var container = document.querySelector("#messages");
+        container.innerHTML = "";
+    },
 
     addMessage(message) {
         this.messages.push(message);
-
-        var sender = "you";
-
-        var container = document.querySelector("#messages");
-        var msg = document.createElement("div");
-        msg.classList.add("chat-message-right");
-        msg.classList.add("pb-4");
-        var msg_inner = `
-            <div>
-                <img src="https://eu.ui-avatars.com/api/?name=${sender}"
-                    class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
-                    <div class="text-muted small text-nowrap mt-2">${message.createdAt}</div>
+        ajax_get('/users/' + message.sender_id, {}, function (user) {
+            user = JSON.parse(user);
+            var container = document.querySelector("#messages");
+            var msg = document.createElement("div");
+            if (user.id == app.userId) {
+                msg.classList.add("chat-message-right");
+            } else {
+                msg.classList.add("chat-message-left");
+            }
+            msg.classList.add("pb-4");
+            var msg_inner = `
+                <div>
+                    <img src="https://eu.ui-avatars.com/api/?name=${user.username}"
+                        class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
+                        <div class="text-muted small text-nowrap mt-2">${message.createdAt.split('T')[1].substring(0, 5)}</div>
+                    </div>
+                    <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+                    <div class="font-weight-bold mb-1">${user.username}</div>
+                    ${message.message}
                 </div>
-                <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-                <div class="font-weight-bold mb-1">${sender}</div>
-                ${message.message}
-            </div>
-        `;
-        msg.innerHTML = msg_inner;
-        container.appendChild(msg);
-    }
+            `;
+            msg.innerHTML = msg_inner;
+
+            if (app.isAnotherDay(new Date(message.createdAt))) {
+                container.appendChild(app.createTimeSpliter(message.createdAt.substring(0, 10)));
+                app.lastDate = new Date(message.createdAt);
+            }
+
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+        });
+    },
+
+    createTimeSpliter(date) {
+        var el = document.createElement("div");
+        el.classList.add("pb-4");
+        el.style = "text-align: center";
+        el.innerHTML = `<p>== ${date} ==</p><br>`;
+        return el;
+    },
+    isAnotherDay(date) {
+        var current = this.lastDate;
+        if (current == null) {
+            // first message
+            return true;
+        }
+        if (date > current) {
+            if ((current.getDay() != date.getDay()) || (current.getMonth() != date.getMonth()) || (current.getFullYear() != date.getFullYear())) {
+                return true;
+            }
+        }
+    },
 }
 
-function loadRoom(id) {
-    ajax_get('/room/' + id, {}, function (data) {
-
+function getAllByRoom(roomId) {
+    ajax_get('/room/' + roomId, {}, function (data) {
+        var name = JSON.parse(data)["name"];
+        document.querySelector("#roomName").innerHTML = name;
+        document.querySelector("#roomImage").setAttribute("src", `https://eu.ui-avatars.com/api/?name=${name}`);
     });
-}
-
-function loadMessages(roomId) {
     ajax_get('/messages/' + roomId, {}, function (messages) {
+        app.currentRoomId = roomId;
+        app.lastDate = null;
+        app.loadRoom();
         messages = JSON.parse(messages);
         messages.forEach((message) => {
             app.addMessage(message);
@@ -43,18 +85,41 @@ function loadMessages(roomId) {
 }
 
 function sendMessage() {
+    if (!app.currentRoomId) {
+        alert("Please select a room");
+        return;
+    }
     ajax_get('/users/current', {}, function (user) {
         var sender_id = JSON.parse(user)["id"];
-        var room_id = 1;
-        var message = "Hello Wolrd";
+        var message = document.querySelector("#message").value;
+        if (!message || message.length == 0) {
+            return;
+        }
         ajax_post('/message/send', {
             sender_id: sender_id,
-            room_id: room_id,
+            room_id: app.currentRoomId,
             message: message
         }, function (message) {
             console.log(message);
+            this.getAllByRoom(app.currentRoomId);
         });
     });
+}
+
+function getUserName(id) {
+    ajax_get('/users/' + id, {}, function (user) {
+        console.log(user);
+    });
+}
+
+function getCurrentUser() {
+    ajax_get('/users/current', {}, function (user) {
+        app.userId = JSON.parse(user)["id"];
+    });
+}
+
+function init() {
+    getCurrentUser();
 }
 
 function ajax_get(url, data, callback, async) {
