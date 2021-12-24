@@ -1,6 +1,3 @@
-const config = require('config.json');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 const db = require('_helpers/db');
 
 
@@ -21,7 +18,7 @@ async function getById(id) {
 
 async function create(params) {
     // validate
-    if (await db.User.findOne({
+    if (await db.Room.findOne({
             where: {
                 name: params.name
             }

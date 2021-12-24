@@ -50,7 +50,7 @@ module.exports = sequelize => {
     }
   };
   const options = {
-    tableName: "paricipants",
+    tableName: "participants",
     comment: "",
     indexes: [{
       name: "user_id",

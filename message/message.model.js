@@ -7,7 +7,7 @@ module.exports = sequelize => {
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: null,
+
       primaryKey: true,
       autoIncrement: true,
       comment: null,
@@ -16,7 +16,6 @@ module.exports = sequelize => {
     room_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: null,
       primaryKey: true,
       autoIncrement: false,
       comment: null,
@@ -29,7 +28,7 @@ module.exports = sequelize => {
     sender_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: null,
+
       primaryKey: true,
       autoIncrement: false,
       comment: null,
@@ -42,20 +41,29 @@ module.exports = sequelize => {
     message: {
       type: DataTypes.STRING(2048),
       allowNull: false,
-      defaultValue: null,
+
       primaryKey: false,
       autoIncrement: false,
       comment: null,
       field: "message"
     },
-    created_at: {
+    createdAt: {
       type: DataTypes.DATE,
       allowNull: true,
-      defaultValue: null,
+
       primaryKey: false,
       autoIncrement: false,
       comment: null,
-      field: "created_at"
+      field: "createdAt"
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+
+      primaryKey: false,
+      autoIncrement: false,
+      comment: null,
+      field: "updatedAt"
     }
   };
   const options = {

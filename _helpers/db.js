@@ -36,6 +36,11 @@ async function initialize() {
     db.Room = require('../room/room.model')(sequelize);
     db.Participants = require('../room/participants.model')(sequelize);
 
-    // sync all models with database
-    await sequelize.sync();
+    try {
+        // sync all models with database
+        await sequelize.sync();
+
+    } catch (e) {
+        console.log(e);
+    }
 }

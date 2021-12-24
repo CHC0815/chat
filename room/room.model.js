@@ -7,7 +7,6 @@ module.exports = sequelize => {
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: null,
       primaryKey: true,
       autoIncrement: true,
       comment: null,
@@ -16,7 +15,6 @@ module.exports = sequelize => {
     name: {
       type: DataTypes.STRING(255),
       allowNull: false,
-      defaultValue: null,
       primaryKey: false,
       autoIncrement: false,
       comment: null,
@@ -26,7 +24,9 @@ module.exports = sequelize => {
   const options = {
     tableName: "room",
     comment: "",
-    indexes: []
+    indexes: [],
+    createdAt: false,
+    updatedAt: false
   };
   const RoomModel = sequelize.define("room_model", attributes, options);
   return RoomModel;
