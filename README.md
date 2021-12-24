@@ -1,5 +1,14 @@
-# node-mysql-registration-login-api
+# EE2E Chat
 
-Node.js + MySQL API for User Management, Authentication and Registration
+## Software
 
-For documentation and instructions see https://jasonwatmore.com/post/2020/08/18/nodejs-mysql-simple-api-for-authentication-registration-and-user-management
+* nodejs
+* mysql
+
+
+## Features
+
+- [x] login / register
+- [ ] list rooms of user
+- [ ] join room
+- [ ] ee2e -> each room has password -> key for aes265 encryption
