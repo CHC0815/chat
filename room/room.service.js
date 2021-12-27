@@ -42,8 +42,6 @@ async function getRoom(id) {
 }
 
 async function checkRoomPassword(id, hash) {
-    console.log(id);
-    console.log(hash);
     const room = await getRoom(id);
-    return room.hash !== hash;
+    return room.hash === hash;
 }

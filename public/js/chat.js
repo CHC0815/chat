@@ -11,7 +11,6 @@ var app = {
         this.roomPassword = null;
         var container = document.querySelector("#messages");
         container.innerHTML = "";
-        $('#modal').modal('show');
     },
 
     addMessage(message) {
@@ -40,7 +39,7 @@ var app = {
                     </div>
                     <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
                     <div class="font-weight-bold mb-1">${user.username}</div>
-                    ${message.message}
+                    ${app.decrypt(message.message)}
                 </div>
                 `;
                 msg.innerHTML = msg_inner;
@@ -74,6 +73,36 @@ var app = {
             }
         }
     },
+    encrypt(message) {
+        var salt = CryptoJS.lib.WordArray.random(128 / 8);
+        var key = CryptoJS.PBKDF2(this.roomPassword, salt, {
+            keySize: 256 / 32,
+            iterations: 100
+        });
+        var iv = CryptoJS.lib.WordArray.random(128 / 8);
+
+        var encrypted = CryptoJS.AES.encrypt(message, key, {
+            iv: iv,
+            padding: CryptoJS.pad.Pkcs7,
+            mode: CryptoJS.mode.CBC
+        });
+        return salt.toString() + iv.toString() + encrypted.toString();
+    },
+    decrypt(data) {
+        var salt = CryptoJS.enc.Hex.parse(data.substr(0, 32));
+        var iv = CryptoJS.enc.Hex.parse(data.substr(32, 32));
+        var encrypted = data.substring(64);
+        var key = CryptoJS.PBKDF2(this.roomPassword, salt, {
+            keySize: 256 / 32,
+            iterations: 100
+        });
+        var decrypted = CryptoJS.AES.decrypt(encrypted, key, {
+            iv: iv,
+            padding: CryptoJS.pad.Pkcs7,
+            mode: CryptoJS.mode.CBC
+        });
+        return decrypted.toString(CryptoJS.enc.Utf8);
+    }
 }
 
 function getAllByRoom(roomId, limit = 50) {
@@ -84,6 +113,7 @@ function getAllByRoom(roomId, limit = 50) {
             'Authorization': 'Bearer ' + getCookie("user-token")
         }
     }).done((data) => {
+        app.currentRoomId = roomId;
         var name = data["name"];
         document.querySelector("#roomName").innerHTML = name;
         document.querySelector("#roomImage").setAttribute("src", `https://eu.ui-avatars.com/api/?name=${name}`);
@@ -96,9 +126,7 @@ function getAllByRoom(roomId, limit = 50) {
         }
     }).done((messages) => {
         messages = messages.reverse();
-        app.currentRoomId = roomId;
         app.lastDate = null;
-        app.loadRoom();
         messages = messages;
         messages.forEach((message) => {
             app.addMessage(message);
@@ -132,7 +160,7 @@ function sendMessage() {
             data: {
                 sender_id: sender_id,
                 room_id: app.currentRoomId,
-                message: message
+                message: app.encrypt(message)
             }
         }).done((message) => {
             console.log(message);
@@ -174,8 +202,17 @@ function enterPassword() {
             'Authorization': 'Bearer ' + getCookie("user-token")
         }
     }).done((respsone) => {
-        console.log(respsone);
+        if (respsone) {
+            $('#modal').modal('hide');
+            getAllByRoom(app.currentRoomId);
+        }
     });
+}
+
+function selectRoom(id) {
+    app.loadRoom();
+    app.currentRoomId = id;
+    $('#modal').modal('show');
 }
 
 function init() {

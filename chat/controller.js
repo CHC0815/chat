@@ -49,6 +49,7 @@ function getRoom(req, res, next) {
 }
 
 function getAllMessagesInRoom(req, res, next) {
+    console.log(req.params);
     messageService.getLimitByRoom(req.params.id, req.params.limit).then((messages) => {
         res.send(messages);
     }).catch((err) => {
