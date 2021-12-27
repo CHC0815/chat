@@ -166,7 +166,16 @@ function getCurrentUser() {
 }
 
 function enterPassword() {
-    app.roomPassword = $('#password').val();
+    app.roomPassword = CryptoJS.SHA256($('#password').val());
+    $.ajax({
+        url: '/room/' + app.currentRoomId + '/check/' + app.roomPassword,
+        type: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie("user-token")
+        }
+    }).done((respsone) => {
+        console.log(respsone);
+    });
 }
 
 function init() {

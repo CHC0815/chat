@@ -13,6 +13,7 @@ router.get('/room/:id', authorize(), getRoom);
 router.get('/login', login);
 router.get('/messages/:id/:limit', authorize(), getAllMessagesInRoom);
 router.post('/message/send', authorize(), sendMessage);
+router.get('/room/:id/check/:hash', authorize(), checkRoomPassword);
 
 module.exports = router;
 
@@ -63,4 +64,12 @@ function sendMessage(req, res, next) {
 
 function login(req, res, next) {
     res.render("login");
+}
+
+function checkRoomPassword(req, res, next) {
+    roomService.checkRoomPassword(req.params.id, req.params.hash).then((result) => {
+        res.send(result);
+    }).catch((err) => {
+        res.send(err);
+    });
 }

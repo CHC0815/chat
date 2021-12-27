@@ -5,7 +5,8 @@ module.exports = {
     getAll,
     getById,
     create,
-    delete: _delete
+    delete: _delete,
+    checkRoomPassword,
 };
 
 async function getAll() {
@@ -38,4 +39,11 @@ async function getRoom(id) {
     const room = await db.Room.findByPk(id);
     if (!room) throw 'Room not found';
     return room;
+}
+
+async function checkRoomPassword(id, hash) {
+    console.log(id);
+    console.log(hash);
+    const room = await getRoom(id);
+    return room.hash !== hash;
 }
