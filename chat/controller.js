@@ -11,7 +11,7 @@ router.get('/', index);
 router.get('/test', test);
 router.get('/room/:id', authorize(), getRoom);
 router.get('/login', login);
-router.get('/messages/:id', authorize(), getAllMessagesInRoom);
+router.get('/messages/:id/:limit', authorize(), getAllMessagesInRoom);
 router.post('/message/send', authorize(), sendMessage);
 
 module.exports = router;
@@ -48,7 +48,7 @@ function getRoom(req, res, next) {
 }
 
 function getAllMessagesInRoom(req, res, next) {
-    messageService.getAllByRoom(req.params.id).then((messages) => {
+    messageService.getLimitByRoom(req.params.id, req.params.limit).then((messages) => {
         res.send(messages);
     }).catch((err) => {
         console.log(err);

@@ -7,7 +7,8 @@ module.exports = {
     create,
     delete: _delete,
     getAllByRoom,
-    sendMessage
+    sendMessage,
+    getLimitByRoom
 };
 
 async function getAll() {
@@ -19,6 +20,18 @@ async function getAllByRoom(roomId) {
         where: {
             room_id: roomId
         }
+    });
+}
+
+async function getLimitByRoom(roomId, limit) {
+    return await db.Message.findAll({
+        limit: parseInt(limit),
+        where: {
+            room_id: roomId
+        },
+        order: [
+            ['createdAt', 'DESC']
+        ]
     });
 }
 

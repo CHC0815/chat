@@ -5,7 +5,8 @@
     <title>Chat</title>
     <link href="/css/chat.css" rel="stylesheet">
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <script src="/js/bootstrap.min.js" defer></script>
+    <script src="/js/jquery.js" defer></script>
+    <script src="/js/bootstrap.js" defer></script>
     <script src="/js/chat.js" defer></script>
 </head>
 
@@ -107,12 +108,25 @@
                                 <button class="btn btn-primary" onclick="sendMessage()">Send</button>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
     </main>
+    <div id="modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Enter Password</h5>
+                </div>
+                <div class="modal-footer">
+                    <input type="password" id="password" class="form-control" placeholder="Password">
+                    <button type="button" onclick="enterPassword()" class="btn btn-secondary"
+                        data-dismiss="modal">Enter</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

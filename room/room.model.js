@@ -19,6 +19,14 @@ module.exports = sequelize => {
       autoIncrement: false,
       comment: null,
       field: "name"
+    },
+    hash: {
+      type: DataTypes.STRING(64),
+      allowNull: false,
+      primaryKey: false,
+      autoIncrement: false,
+      comment: null,
+      field: "hash"
     }
   };
   const options = {
