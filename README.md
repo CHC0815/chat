@@ -1,4 +1,4 @@
-# EE2E Chat
+# E2EE Chat
 
 ## Software
 
